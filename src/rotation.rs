@@ -4,6 +4,7 @@ pub struct Point {
     pub z: f64,
 }
 
+#[allow(dead_code)]
 impl Point {
     pub fn show(&self) {
         println!("({}, {}, {})", self.x, self.y, self.z);
@@ -42,9 +43,9 @@ impl Point {
         self
     }
 
-    pub fn rotate_rpy (&mut self, alpha: f64, beta: f64, gamma: f64) -> &mut Self {
-        self.rotate_x(gamma)
-            .rotate_y(beta)
-            .rotate_z(alpha)
+    pub fn rotate_rpy (&mut self, yaw: f64, pitch: f64, roll: f64) -> &mut Self {
+        self.rotate_x(roll)
+            .rotate_y(pitch)
+            .rotate_z(yaw)
     }
 }

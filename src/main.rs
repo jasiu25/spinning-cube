@@ -1,10 +1,12 @@
 mod rotation;
+mod display;
+use std::{time, thread};
 
 fn main() {
     let mut points: Vec<rotation::Point> = Vec::new();
-    let xs = [-0.5, 0.5];
-    let ys = [-0.5, 0.5];
-    let zs = [-0.5, 0.5];
+    let xs: [f64; 2] = [-0.5, 0.5];
+    let ys: [f64; 2] = [-0.5, 0.5];
+    let zs: [f64; 2] = [-0.5, 0.5];
 
     // Create cube (8 points in space)
     for &x in &xs {
@@ -15,20 +17,27 @@ fn main() {
         }
     }
 
-    // Initial tilt
+    let edges: [(usize, usize); 12] = [(0,1), (0,2), (0,4), (1,3), (1,5), (2,3), (2,6), (3,7), (4,5), (4,6), (5,7), (6,7)];
+
+
     for p in &mut points {
-        p.rotate_rpy(45.0, 25.0, 15.0);
-        p.show();
+        p.rotate_rpy(25.0, 25.0, 25.0);
     }
 
-    for angle in 0..=5 {
-        for p in &mut points {
-            spin(p, angle as f64);
+    let time: time::Duration = time::Duration::from_millis(10);
+
+    loop {
+        for _ in 1..=365 {
+            let mut screen: Vec<Vec<char>> = vec![vec![' '; display::WIDTH as usize]; display::HEIGHT as usize];
+            
+            for p in &mut points {
+                p.rotate_rpy(1.0, 0.0, 0.0);
+            }
+            for (p1, p2) in edges {
+                display::draw_line(&points[p1], &points[p2], &mut screen);
+            }
+            display::render(&screen);
+            thread::sleep(time);
         }
     }
-}
-
-fn spin(p: &mut rotation::Point, angle: f64) {
-    p.rotate_z(angle);
-    p.show();
 }
