@@ -43,9 +43,25 @@ impl Point {
         self
     }
 
-    pub fn rotate_rpy (&mut self, yaw: f64, pitch: f64, roll: f64) -> &mut Self {
-        self.rotate_x(roll)
-            .rotate_y(pitch)
-            .rotate_z(yaw)
+    pub fn rotate_rpy (&mut self, alpha: f64, beta: f64, gamma: f64) -> &mut Self {
+        let alpha: f64 = alpha.to_radians();
+        let beta: f64 = beta.to_radians();
+        let gamma: f64 = gamma.to_radians();
+        let (ca, sa) = (alpha.cos(), alpha.sin());
+        let (cb, sb) = (beta.cos(), beta.sin());
+        let (cg, sg) = (gamma.cos(), gamma.sin());
+        let x = self.x;
+        let y = self.y;
+        let z = self.z;
+
+        let new_x: f64 = z * (ca * cb) + y * (ca * sb * sg - sa * cg) + x * (ca * sb * cg + sa * sg);
+        let new_y: f64 = z * (sa * cb) + y * (sa * sb * sg + ca * cg) + x * (sa * sb * cg - ca * sg);
+        let new_z: f64 = z * -sb + y * (cb * sg) + x * (cb * cg);
+        
+        self.x = new_x;
+        self.y = new_y;
+        self.z = new_z;
+
+        self
     }
 }

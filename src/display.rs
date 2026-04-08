@@ -4,7 +4,7 @@ pub static WIDTH: i32 = 80;
 pub static HEIGHT: i32 = 40;
 pub static DISTANCE: f64 = 2.0;
 
-pub fn draw_point((x, y): (f64, f64), screen: &mut Vec<Vec<char>>) {
+pub fn prepare_point((x, y): (f64, f64), screen: &mut Vec<Vec<char>>) {
     if x < WIDTH as f64 && y < HEIGHT as f64 {
         screen[y as usize][x as usize] = '#';
     }
@@ -31,19 +31,19 @@ fn to_screen((x, y): (f64, f64)) -> (i32, i32) {
 }
 
 // Bresenham's line algorithm
-pub fn draw_line(p1: &Point, p2: &Point, screen: &mut Vec<Vec<char>>) {
+pub fn prepare_line(p1: &Point, p2: &Point, screen: &mut Vec<Vec<char>>) {
     let (x0, y0) = to_screen(project(p1));
     let (x1, y1) = to_screen(project(p2));
 
     if (y1 - y0).abs() < (x1 - x0).abs() {
-        draw_horizontal_line(x0, y0, x1, y1, screen);
+        prepare_horizontal_line(x0, y0, x1, y1, screen);
     } else {
-        draw_vertical_line(x0, y0, x1, y1, screen);
+        prepare_vertical_line(x0, y0, x1, y1, screen);
     }
 }
 
 #[allow(dead_code)]
-fn draw_horizontal_line(mut x0: i32, mut y0: i32, mut x1: i32, mut y1: i32, screen: &mut Vec<Vec<char>>) {
+fn prepare_horizontal_line(mut x0: i32, mut y0: i32, mut x1: i32, mut y1: i32, screen: &mut Vec<Vec<char>>) {
     if x0 > x1 {
         (x0, x1) = (x1, x0);
         (y0, y1) = (y1, y0);
@@ -53,17 +53,14 @@ fn draw_horizontal_line(mut x0: i32, mut y0: i32, mut x1: i32, mut y1: i32, scre
     let mut dy: i32 = y1 - y0;
 
     // Set line's direction depending on delta y
-    let mut dir: i32 = 1;
-    if dy < 0 {
-        dir = -1;
-    }
+    let dir: i32 = if dy < 0 { -1 } else { 1 };
     dy *= dir;
 
     let mut d: i32 = 2*dy - dx;
     let mut y: i32 = y0;
 
     for x in x0 as i32..=x1 as i32 {
-        draw_point((x as f64, y as f64), screen);
+        prepare_point((x as f64, y as f64), screen);
         if d > 0 {
             y += dir;
             d += 2 * (dy - dx);
@@ -74,7 +71,7 @@ fn draw_horizontal_line(mut x0: i32, mut y0: i32, mut x1: i32, mut y1: i32, scre
 }
 
 #[allow(dead_code)]
-fn draw_vertical_line(mut x0: i32, mut y0: i32, mut x1: i32, mut y1: i32, screen: &mut Vec<Vec<char>>) {
+fn prepare_vertical_line(mut x0: i32, mut y0: i32, mut x1: i32, mut y1: i32, screen: &mut Vec<Vec<char>>) {
     if y0 > y1 {
         (x0, x1) = (x1, x0);
         (y0, y1) = (y1, y0);
@@ -83,17 +80,14 @@ fn draw_vertical_line(mut x0: i32, mut y0: i32, mut x1: i32, mut y1: i32, screen
     let dy: i32 = y1 - y0;
 
     // Set line's direction depending on delta y
-    let mut dir: i32 = 1;
-    if dx < 0 {
-        dir = -1;
-    }
+    let dir: i32 = if dy < 0 { -1 } else { 1 };
     dx *= dir;
 
     let mut d: i32 = 2*dx - dy;
     let mut x: i32 = x0;
 
     for y in y0 as i32..=y1 as i32 {
-        draw_point((x as f64, y as f64), screen);
+        prepare_point((x as f64, y as f64), screen);
         if d > 0 {
             x += dir;
             d += 2 * (dx - dy);
