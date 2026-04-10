@@ -39,13 +39,11 @@ fn main() {
             let mut screen: Vec<Vec<char>> = vec![vec![' '; display::WIDTH as usize]; display::HEIGHT as usize];
             
             for p in &mut points {
-                //p.rotate_rpy(0.0, 1.0, 0.0);
                 p.rotate_y(1.0);
             }
             for (p1, p2) in edges {
                 display::prepare_line(&points[p1], &points[p2], &mut screen);
             }
-            print!("\x1B[H");
             let _ = stdout().flush();
             display::render(&screen);
             thread::sleep(time);
