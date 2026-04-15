@@ -1,14 +1,8 @@
 use crate::rotation::Point;
 
-pub static WIDTH: i32 = 80;
-pub static HEIGHT: i32 = 40;
+pub static WIDTH: f64 = 80.0;
+pub static HEIGHT: f64 = 40.0;
 pub static DISTANCE: f64 = 2.0;
-
-pub fn prepare_point((x, y): (f64, f64), screen: &mut Vec<Vec<char>>) {
-    if x < WIDTH as f64 && y < HEIGHT as f64 {
-        screen[y as usize][x as usize] = '#';
-    }
-}
 
 pub fn render(screen: &Vec<Vec<char>>) {
     // Move the cursor to the beginning of the screen
@@ -26,10 +20,16 @@ fn project(p: &Point) -> (f64, f64) {
 }
 
 fn to_screen((x, y): (f64, f64)) -> (i32, i32) {
-    let sx: i32  = ((x + 1.0) * (WIDTH as f64 / 2.0)) as i32;
-    let sy: i32  = ((1.0 - y) * (HEIGHT as f64 / 2.0)) as i32;
+    let sx: i32  = ((x + 1.0) * (WIDTH / 2.0)) as i32;
+    let sy: i32  = ((1.0 - y) * (HEIGHT / 2.0)) as i32;
 
     (sx, sy)
+}
+
+pub fn prepare_point((x, y): (f64, f64), screen: &mut Vec<Vec<char>>) {
+    if x < WIDTH && y < HEIGHT {
+        screen[y as usize][x as usize] = '#';
+    }
 }
 
 // Bresenham's line algorithm

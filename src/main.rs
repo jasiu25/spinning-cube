@@ -20,20 +20,18 @@ fn main() {
 
     let edges: [(usize, usize); 12] = [(0,1), (0,2), (0,4), (1,3), (1,5), (2,3), (2,6), (3,7), (4,5), (4,6), (5,7), (6,7)];
 
-    let mut screen: Vec<Vec<char>> = vec![vec![' '; display::WIDTH as usize]; display::HEIGHT as usize];
+    // Initial tilt
     for p in &mut points {
         p.rotate_rpy(0.0, 0.0, -25.0);
     }
-    for (p1, p2) in edges {
-        display::prepare_line(&points[p1], &points[p2], &mut screen);
-    }
-    display::render(&screen);
-
-    let time: time::Duration = time::Duration::from_millis(25);
 
     // Hide the cursor
     print!("\x1B[?25l");
 
+    // Time duration later used to slow down frame generation set to bout 24 fps
+    let time: time::Duration = time::Duration::from_millis(41);
+
+    // Spin the cube and display it on the screen
     loop {
         for _ in 1..=365 {
             let mut screen: Vec<Vec<char>> = vec![vec![' '; display::WIDTH as usize]; display::HEIGHT as usize];
@@ -41,9 +39,11 @@ fn main() {
             for p in &mut points {
                 p.rotate_y(1.0);
             }
+
             for (p1, p2) in edges {
                 display::prepare_line(&points[p1], &points[p2], &mut screen);
             }
+
             let _ = stdout().flush();
             display::render(&screen);
             thread::sleep(time);
